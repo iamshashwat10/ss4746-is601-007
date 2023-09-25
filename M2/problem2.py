@@ -10,6 +10,10 @@ def process_array(num, arr):
     total = 0.00
     # Note: use the arr variable; don't directly refer to a1-a4 variables
     # TODO add necessary code here for sum; every number must have two decimal places shown (i.e., 0.10, 0.01, 0.00)
+    #ss4746_Shashwat_Singh-09/23/23
+    for number in arr:
+        total += round(number, 2)
+    print("\nThe total is {:.2f}:\n".format(total))
     print("\nThe total is {}:\n".format(total))
 
 
