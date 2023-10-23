@@ -41,7 +41,7 @@
 </table></td></tr>
 <table><tr><td> <em>Deliverable 4: </em> Misc Items </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Pull Request URL for M2-Python-HW to dev</td></tr>
-<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/3">https://github.com/iamshashwat10/ss4746-is601-007/pull/3</a> </td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/4">https://github.com/iamshashwat10/ss4746-is601-007/pull/3</a> </td></tr>
 <tr><td> <em>Sub-Task 2: </em> Talk about what you learned, any issues you had, how you resolve them</td></tr>
 <tr><td> <em>Response:</em> <p>Learned different python modules, like how to iterate through loops, how to convert<br>a given number to desired data type, conversion of positives to negative number.<div>Learned<br>more functions which helped me do this homework.</div><br></p><br></td></tr>
 </table></td></tr>
