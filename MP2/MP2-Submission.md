@@ -1,6 +1,6 @@
 <table><tr><td> <em>Assignment: </em> IS601 - Mini Project 2 - Pumpkins</td></tr>
 <tr><td> <em>Student: </em> Shashwat Singh (ss4746)</td></tr>
-<tr><td> <em>Generated: </em> 10/22/2023 11:59:25 PM</td></tr>
+<tr><td> <em>Generated: </em> 10/23/2023 3:52:10 PM</td></tr>
 <tr><td> <em>Grading Link: </em> <a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IS601-007-F23/is601-mini-project-2-pumpkins/grade/ss4746" target="_blank">Grading</a></td></tr></table>
 <table><tr><td> <em>Instructions: </em> <ol><li>Create a new branch per the desired branch name below</li><li>Add the baseline files from the following link:&nbsp;<a href="https://gist.github.com/MattToegel/bb0d25257414c7154267baf0931dbef4">https://gist.github.com/MattToegel/bb0d25257414c7154267baf0931dbef4</a></li><li>Put them into a subfolder in your repository folder (I called my folder MP2)</li><li>Create a test folder as a subdirectory of MP2</li><li>git add .</li><li>git commit -m "baseline files"</li><li>git push origin (name of desired branch below)</li><li>You can go to github and open the pull request for evidence capturing later (don't close/merge the pull request until you're done with the assignment)</li><li>Do the below tasks and fill in the below entries</li><ol><li>git add/commit after any significant changes to build up history</li></ol><li>Save the below input and generate the submission markdown file (copy to clipboard or download the file)</li><li>Name it something relevant to the assignment if it's not named already</li><li>git add the submission file</li><li>git commit the submission file</li><li>git push the submission file</li><li>Complete the pull request to dev</li><li>Create a pull request from dev to prod</li><li>Go to the prod branch on github, navigate to the submission file</li><li>Paste that link to Canvas</li></ol></td></tr></table>
 <table><tr><td> <em>Deliverable 1: </em> Code Changes - Add the calculate_cost() implementation </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
@@ -10,6 +10,9 @@
 </td></tr>
 <tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-10-22T20.39.59image.png.webp?alt=media&token=e7104d51-aba1-4f0e-a714-3cdd4abddcd3"/></td></tr>
 <tr><td> <em>Caption:</em> <p>Output showing (The input() message should properly display the value in currency format<br>(this should be present in one of the screenshots) including the $ is<br>optional)<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-10-23T19.51.13image.png.webp?alt=media&token=e0e3711e-e100-4ba9-ba03-085de1bbb961"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Calculate Cost Method<br></p>
 </td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Explain the approach to implementing the calculation</td></tr>
