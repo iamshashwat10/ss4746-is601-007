@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - mp3-prod
-      - F23-MiniProject-3
 
 # Your workflows jobs.
 jobs:
