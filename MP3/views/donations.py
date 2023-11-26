@@ -11,6 +11,7 @@ def search():
     # DO NOT DELETE PROVIDED COMMENTS
     # TODO search-1 retrieve donation id as id, donor_firstname, donor_lastname, donor_email, organization_id, item_name, item_description, item_quantity, donation_date, comments, organization_name using a LEFT JOIN
     #ss4746
+    #date:11/21/23
     query = """ 
     SELECT 
     donation.id,donor_firstname,donor_lastname,donor_email,organization_id,item_name,item_description,item_quantity,donation_date,comments,organization.name
@@ -19,6 +20,7 @@ def search():
     allowed_columns = ["donor_firstname", "donor_lastname", "donor_email", "organization_name" ,"item_name", "item_quantity", "created", "modified"]
     # TODO search-2 get fn, ln, email, organization_id, column, order, limit from request args
     #ss4746
+    #date:11/21/23
     fn = request.args.get("fn")
     ln = request.args.get("ln")
     email = request.args.get("email")
@@ -29,23 +31,31 @@ def search():
     limit = request.args.get("limit")
     # TODO search-3 append like filter for donor_firstname if provided
     #ss4746
+    #date:11/21/23
     if fn:
         query += " AND donor_firstname LIKE %(fn)s"
         args["fn"] = f"%{fn}%"
     # TODO search-4 append like filter for donor_lastname if provided
+    #ss4746
+    #date:11/21/23
     if ln:
         query += " AND donor_lastname LIKE %(ln)s"
         args["ln"] = f"%{ln}%"
+    #ss4746
+    #date:11/21/23
     # TODO search-5 append like filter for donor_email if provided
     if email:
         query += " AND donor_email LIKE %(email)s"
         args["email"] = f"%{email}%"
     # TODO search-6 append like filter for item_name if provided
     #ss4746
+    #date:11/21/23
     if item_name:
         query += " AND item_name LIKE %(item_name)s"
         args["item_name"] = f"%{item_name}%"
     # TODO search-7 append equality filter for organization_id if provided
+    #ss4746
+    #date:11/21/23
     if organization_id:
         query += " AND donation.organization_id = %(organization_id)s"
         args["organization_id"] = organization_id
@@ -58,6 +68,7 @@ def search():
             flash(str(e), "error")
     # TODO search-8 append sorting if column and order are provided and within the allowed columns and order options (asc, desc)
     #ss4746
+    #date:11/21/23
     if column and order and column in allowed_columns and order in ("asc", "desc"):
         if column == 'created':
             column = 'donation.created'
@@ -67,6 +78,8 @@ def search():
             column= 'organization.name'
         query += f" ORDER BY {column} {order}"
     # TODO search-9 append limit (default 10) or limit greater than 1 and less than or equal to 100
+    #ss4746
+    #date:11/21/23
     if limit:
         try:
             limit = int(limit)
@@ -79,9 +92,10 @@ def search():
             limit = 10
             flash("Limit must be a valid number", "error")
     # TODO search-10 provide a proper error message if limit isn't a number or if it's out of bounds
+    #ss4746
+    #date:11/21/23
     if not limit:
         limit = 10 # TODO change this per the above requirements
-        #ss4746
 
     query += " LIMIT %(limit)s"
     args["limit"] = limit
@@ -93,7 +107,7 @@ def search():
             rows = result.rows
             #print(f"rows: {rows}")
     except Exception as e:
-        # TODO search-11 make message user friendly
+    # TODO search-11 make message user friendly
         flash("Database Search Failed", "error")
     # hint: use allowed_columns in template to generate sort dropdown
     # hint2: convert allowed_columns into a list of tuples representing (value, label)
@@ -110,53 +124,74 @@ def add():
         # TODO add-1 retrieve form data for donor_firstname, donor_lastname, donor_email, organization_id, item_name, item_description, item_quantity, donation_date, comments
         # TODO add-2 donor_firstname is required (flash proper error message)
         #ss4746
+        #date:11/21/23
         has_error = False # use this to control whether or not an insert occurs
         donor_firstname = request.form.get('donor_firstname')
         if not donor_firstname:
             flash('First Name missing','danger')
             has_error = True
         # TODO add-3 donor_lastname is required (flash proper error message)
+        #ss4746
+        #date:11/21/23
         donor_lastname = request.form.get('donor_lastname')
         if not donor_lastname:
             flash('Last Name missing','danger')
             has_error = True
         # TODO add-4 donor_email is required (flash proper error message)
+        #ss4746
+        #date:11/21/23
         donor_email = request.form.get('donor_email')
         if not donor_email:
             flash('Email missing','danger')
             has_error = True
         # TODO add-4a email must be in proper format (flash proper message)
+        #ss4746
+        #date:11/21/23
         if not re.match( r"^\S+@\S+\.\S+$", donor_email):
             flash("Email was not in correct",'danger')
             has_error = True
         # TODO add-5 organization_id is required (flash proper error message)
+        #ss4746
+        #date:11/21/23
         organization_id = request.form.get('organization_id')
         if not organization_id:
             flash('Organization ID is required','danger')
             has_error = True
         # TODO add-6 item_name is required (flash proper error message)
+        #ss4746
+        #date:11/21/23
         item_name = request.form.get('item_name')
         if not item_name:
             flash("Item Name is required",'danger')
             has_error = True
         # TODO add-7 item_description is optional
+        #ss4746
+        #date:11/21/23
         item_description = request.form.get('item_description')
         # TODO add-8 item_quantity is required and must be more than 0 (flash proper error message)
+        #ss4746
+        #date:11/21/23
         item_quantity = request.form.get('item_quantity')
         if not item_quantity or int(item_quantity)<1:
             flash("Item Quantity is required",'danger')
             has_error = True
         # TODO add-9 donation_date is required and must be within the past 30 days
+        #ss4746
+        #date:11/21/23
         donation_date = request.form.get('donation_date')
         if not donation_date:
             flash("Donation Date is required",'danger')
             has_error = True
         #print(datetime.strptime(donation_date, '%Y-%m-%d').date())
+        #ss4746
+        #date:11/21/23
         elif datetime.now().date() - datetime.strptime(donation_date, '%Y-%m-%d').date() >= timedelta(days=30):
             flash('You cannot select date past 30 days','danger')
             has_error = True
 
         # TODO add-10 comments are optional
+        #ss4746
+        #date:11/21/23
         comments = request.form.get('comments')
 
         
@@ -192,6 +227,8 @@ def edit():
     row = {}
     
     # TODO edit-1 request args id is required (flash proper error message)
+    #ss4746
+    #date:11/21/23
     id = False
     id = request.args.get('id')
     if not id: # TODO update this for TODO edit-1
@@ -200,6 +237,8 @@ def edit():
         if request.method == "POST":
             
             # TODO add-2 retrieve form data for donor_firstname, donor_lastname, donor_email, organization_id, item_name, item_description, item_quantity, donation_date, comments
+            #ss4746
+            #date:11/21/23
             donor_firstname = request.form.get('donor_firstname')
             donor_lastname = request.form.get('donor_lastname')
             donor_email = request.form.get('donor_email')
@@ -213,39 +252,57 @@ def edit():
             # decides should we update or not
             has_error = False # use this to control whether or not an insert occurs
             # TODO add-3 donor_firstname is required (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not donor_firstname:
                 flash("First Name is Required",'danger')
                 has_error = True
             # TODO add-4 donor_lastname is required (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not donor_lastname:
                 flash("Last Name is Required",'danger')
                 has_error = True
             # TODO add-5 donor_email is required (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not donor_email:
                 flash("Email is Required",'danger')
                 has_error = True
             # TODO add-5a email must be in proper format (flash proper message)
+            #ss4746
+            #date:11/21/23
             if not re.match(r"^\S+@\S+\.\S+$", donor_email):
                 flash("Email was not in correct",'danger')
                 has_error = True
             # TODO add-6 organization_id is required (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not organization_id:
                 flash('Organization ID is required','danger')
                 has_error = True
             # TODO add-7 item_name is required (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not item_name:
                 flash("Item Name is required",'danger')
                 has_error = True
             # TODO add-8 item_description is optional
             # TODO add-9 item_quantity is required and must be more than 0 (flash proper error message)
+            #ss4746
+            #date:11/21/23
             if not item_quantity or int(item_quantity)<1:
                 flash("Item Quantity is required",'danger')
                 has_error = True
             # TODO add-10 donation_date is required and must be within the past 30 days
+            #ss4746
+            #date:11/21/23
             if not donation_date:
                 flash("Donation Date is required",'danger')
                 has_error = True
             #print(datetime.strptime(donation_date, '%Y-%m-%d').date())
+            #ss4746
+            #date:11/21/23
             if datetime.now().date() - datetime.strptime(donation_date, '%Y-%m-%d').date() >= timedelta(days=30):
                 flash('You cannot select date past 30 days','danger')
                 has_error = True
@@ -321,6 +378,8 @@ def delete():
     # TODO delete-3 ensure a flash message shows for successful delete
     # TODO delete-4 pass all argument except id to this route
     # TODO delete-5 redirect to donation search
+    #ss4746
+    #Date:11/21/23
     id = request.args.get('id')
     args = {**request.args}
     if not id:

@@ -57,10 +57,16 @@ def search():
             organization.id
             """
     # TODO search-6 append sorting if column and order are provided and within the allows columns and allowed order asc,desc
+    # TODO search-6 append sorting if column and order are provided and within the allows columns and allowed order asc,desc
     if column and order and column in allowed_columns and order in ("asc", "desc"):
-        column = "organization." + str(column)
-        query += f"ORDER BY {column} {order}"
+        if column not in ["name", "city", "country", "state", "modified", "created"]:
+        # If the column is not in the predefined list, don't prefix with "organization."
+         query += f"ORDER BY {column} {order}"
+        else:
+         column = "organization." + str(column)
+         query += f"ORDER BY {column} {order}"
         args['column'] = f"%{column}%"
+
 
    
     # TODO search-7 append limit (default 10) or limit greater than or equal to 1 and less than or equal to 100
