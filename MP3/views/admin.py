@@ -18,6 +18,8 @@ def importCSV():
             flash('No selected file', "warning")
             return redirect(request.url)
         # TODO importcsv-1 check that it's a .csv file, return a proper flash message if it's not and don't attempt to process the file
+        #ss4746
+        #Date:11/20/2023
         if ".csv" not in file.filename:
             flash('Select CSV file',"warning")
             return redirect(request.url)
@@ -57,17 +59,23 @@ def importCSV():
             """
             # Note: this reads the file as a stream instead of requiring us to save it, don't modify/remove it
             stream = io.TextIOWrapper(file.stream._file, "UTF8", newline=None)
+            
             # TODO importcsv-2 read the csv file stream as a dict
+            #ss4746
+            #Date:11/20/2023
             organization_names =[]
             for row in csv.DictReader(stream):
                 #pass 
                 # print(row) #example
-                # TODO importcsv-3: extract organization data and append to organization list
-                # as a dict only with organization data if all organization fields are present (refer to above SQL)
-                #(name, address, city, country, state, zip, website, description)
-                # original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-                # keys_to_select = ['a', 'c']
-                # subset_dict = {key: original_dict[key] for key in keys_to_select}
+            
+            # TODO importcsv-3: extract organization data and append to organization list
+            #ss4746
+            #Date:11/20/2023
+            # as a dict only with organization data if all organization fields are present (refer to above SQL)
+            #(name, address, city, country, state, zip, website, description)
+            # original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+            # keys_to_select = ['a', 'c']
+            # subset_dict = {key: original_dict[key] for key in keys_to_select}
                 keysOfOrganizations = set(['organization_name', 'organization_address', 'organization_city', 'organization_country', 'organization_state', 'organization_zip', 'organization_website', 'organization_description'])
                 if keysOfOrganizations.issubset(row.keys()) and row['organization_name'] not in organization_names:
                     organization_names.append(row['organization_name'])
@@ -81,9 +89,12 @@ def importCSV():
                     organization['website'] = row['organization_website']
                     organization['description'] = row['organization_description']
                     organizations.append(organization)
-                # TODO importcsv-4: extract donation data and append to donation list
-                # as a dict only with donation data if all donation fields are present (refer to above SQL)
-                #(donor_firstname, donor_lastname, donor_email, item_name, item_description, item_quantity, organization_id, donation_date, comments)
+           
+            # TODO importcsv-4: extract donation data and append to donation list
+            #ss4746
+            #Date:11/20/2023
+            # as a dict only with donation data if all donation fields are present (refer to above SQL)
+            #(donor_firstname, donor_lastname, donor_email, item_name, item_description, item_quantity, organization_id, donation_date, comments)
                 full_name = row["donor_name"]
                 split_names = full_name.split()  # Split by whitespace
                 if len(split_names)== 2:
@@ -113,28 +124,36 @@ def importCSV():
                 print(f"Inserting or updating {len(organizations)} organizations")
                 try:
                     result = DB.insertMany(organization_query, organizations)
-                    # TODO importcsv-5 display flash message about number of organizations inserted
+            # TODO importcsv-5 display flash message about number of organizations inserted
+            #ss4746
+            #Date:11/20/2023
                     Message = len(organizations),"Organizations Inserted"
                     flash(Message,"success")
                 except Exception as e:
                     traceback.print_exc()
                     flash("There was an error loading in the csv data", "danger")
             else:
-                # TODO importcsv-6 display flash message (info) that no organizations were loaded
+            # TODO importcsv-6 display flash message (info) that no organizations were loaded
+            #ss4746
+            #Date:11/20/2023
                 flash('No organizations were loaded',"info")
                 pass
             if len(donations) > 0:
                 print(f"Inserting or updating {len(donations)} donations")
                 try:
                     result = DB.insertMany(donation_query, donations)
-                    # TODO importcsv-7 display flash message about number of donations loaded
+            # TODO importcsv-7 display flash message about number of donations loaded
+            #ss4746
+            #Date:11/20/2023
                     Message = len(donations),"donations Inserted"
                     flash(Message,"success")
                 except Exception as e:
                     traceback.print_exc()
                     flash("There was an error loading in the csv data", "danger")
             else:
-                # TODO importcsv-8 display flash message (info) that no donations were loaded
+            # TODO importcsv-8 display flash message (info) that no donations were loaded
+            #ss4746
+            #Date:11/20/2023
                 flash('No donations were loaded',"info")
                 pass
             try:
