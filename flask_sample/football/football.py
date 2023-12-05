@@ -20,16 +20,16 @@ def fetch():
 
                 # Assuming your database table for football teams is named IS601_Team
                 result = DB.insertOne(
-                    """INSERT INTO IS601_Team (name, code, country, founded, national, logo_url)
-                        VALUES (%s, %s, %s, %s, %s, %s)
+                    """INSERT INTO IS601_Team (id, name, code, country, founded, national, logo_url)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                         ON DUPLICATE KEY UPDATE
                         code = VALUES(code),
                         country = VALUES(country),
                         founded = VALUES(founded),
                         national = VALUES(national),
                         logo_url = VALUES(logo_url)""",
-                    team_data['name'], team_data['code'], team_data['country'], team_data['founded'],
-                    team_data['national'], team_data.get('logo_url', '')
+                    team_data['id'], team_data['name'], team_data['code'], team_data['country'], team_data['founded'],
+                    team_data['national'], team_data.get('logo', '')
                 )
 
                 if result.status:
@@ -43,6 +43,7 @@ def fetch():
             flash(f"Error loading team record: {e}", "danger")
 
     return render_template("team_search.html", form=form)
+
 
 @football.route("/add", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
