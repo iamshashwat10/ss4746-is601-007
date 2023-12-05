@@ -85,3 +85,85 @@ def add():
         print("Form Errors:", form.errors)
     
     return render_template("team_form.html", form=form, type="Create")
+
+@football.route("/edit", methods=["GET", "POST"])
+@admin_permission.require(http_exception=403)
+def edit():
+    form = TeamForm()
+    id = request.args.get("id")
+    if id is None:
+        flash("Missing ID", "danger")
+        return redirect(url_for("football.list"))
+    if form.validate_on_submit() and id:
+        try:
+            # Update the existing team record in the database
+            result = DB.insertOne(
+                "UPDATE IS601_Team SET name = %s, code = %s, country = %s, founded = %s, national = %s, logo_url = %s WHERE id = %s",
+                form.name.data, form.code.data, form.country.data, form.founded.data,
+                form.national.data, form.logo_url.data, id
+            )
+            if result.status:
+                flash(f"Updated team record for {form.name.data}", "success")
+        except Exception as e:
+            flash(f"Error updating team record: {e}", "danger")
+    try:
+        result = DB.selectOne(
+            "SELECT name, code, country, founded, national, logo_url FROM IS601_Team WHERE id = %s",
+            id
+        )
+        if result.status and result.row:
+            form = TeamForm(data=result.row)
+    except Exception as e:
+        flash("Error fetching team record", "danger")
+    return render_template("team_form.html", form=form, type="Edit")
+
+@football.route("/list", methods=["GET"])
+@admin_permission.require(http_exception=403)
+def list():
+    rows = []
+    try:
+        result = DB.selectAll("SELECT id, name, code, country, founded, national, logo_url FROM IS601_Team LIMIT 100")
+        if result.status and result.rows:
+            rows = result.rows
+    except Exception as e:
+        print(e)
+        flash("Error getting team records", "danger")
+    return render_template("team_list.html", rows=rows)
+
+@football.route("/delete", methods=["GET"])
+@admin_permission.require(http_exception=403)
+def delete():
+    id = request.args.get("id")
+    args = {**request.args}
+    if id:
+        try:
+            # Delete the team record from the database
+            result = DB.delete("DELETE FROM IS601_Team WHERE id = %s", id)
+            if result.status:
+                flash("Deleted team record", "success")
+        except Exception as e:
+            flash(f"Error deleting team record: {e}", "danger")
+        del args["id"]
+    else:
+        flash("No ID present", "warning")
+    return redirect(url_for("football.list", **args))
+
+@football.route("/view", methods=["GET"])
+def view():
+    id = request.args.get("id")
+    if id is None:
+        flash("Missing ID", "danger")
+        return redirect(url_for("football.list"))
+    try:
+        result = DB.selectOne(
+            "SELECT name, code, country, founded, national, logo_url FROM IS601_Team WHERE id = %s",
+            id
+        )
+        if result.status and result.row:
+            return render_template("team_view.html", team=result.row)
+        else:
+            flash("Team record not found", "danger")
+    except Exception as e:
+        print(f"Team error {e}")
+        flash("Error fetching team record", "danger")
+    return redirect(url_for("football.list"))
