@@ -20,22 +20,23 @@ def fetch():
 
                 # Assuming your database table for football teams is named IS601_Team
                 result = DB.insertOne(
-                    """INSERT INTO IS601_Team (id, name, code, country, founded, national, logo_url)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """INSERT INTO IS601_Team (id, name, code, country, founded, national, logo_url, source)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                         ON DUPLICATE KEY UPDATE
                         code = VALUES(code),
                         country = VALUES(country),
                         founded = VALUES(founded),
                         national = VALUES(national),
-                        logo_url = VALUES(logo_url)""",
+                        logo_url = VALUES(logo_url),
+                        source = VALUES(source)""",
                     team_data['id'], team_data['name'], team_data['code'], team_data['country'], team_data['founded'],
-                    team_data['national'], team_data.get('logo', '')
+                    team_data['national'], team_data.get('logo', ''), 'API'
                 )
 
                 if result.status:
-                    flash(f"Loaded team record for {form.name.data}", "success")
+                    flash(f"Loaded team record for {form.name.data} from API", "success")
                 else:
-                    flash(f"Error loading team record: {result.error}", "danger")
+                    flash(f"Error loading team record from API: {result.error}", "danger")
             else:
                 flash(f"No team found for {form.name.data}", "warning")
 
@@ -43,6 +44,8 @@ def fetch():
             flash(f"Error loading team record: {e}", "danger")
 
     return render_template("team_search.html", form=form)
+
+
 
 
 @football.route("/add", methods=["GET", "POST"])
@@ -123,7 +126,7 @@ def edit():
 def list():
     rows = []
     try:
-        result = DB.selectAll("SELECT id, name, code, country, founded, national, logo_url FROM IS601_Team LIMIT 100")
+        result = DB.selectAll("SELECT id, name, code, country, founded, national, logo_url, source FROM IS601_Team LIMIT 100")
         if result.status and result.rows:
             rows = result.rows
     except Exception as e:
