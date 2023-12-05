@@ -8,6 +8,7 @@ on:
     branches:
       - dev
       - Flask-Template
+      - Milestone2
 
 # Your workflows jobs.
 jobs:

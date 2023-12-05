@@ -8,10 +8,9 @@ class TeamSearchForm(FlaskForm):
 
 class TeamForm(FlaskForm):
     name = StringField('Name', [validators.Length(min=1, max=20)])
-    code = StringField('Code', [validators.Length(min=3, max=5)])
-    founded = DecimalField('Founded', [validators.NumberRange(min=0)])
-    country = StringField('Country', [validators.Length(min=1, max=20)])
-    national = StringField('National', [validators.Length(min=1, max=20)])
+    code = StringField('Code', [validators.Length(min=3, max=5, message="Code must be between 3 and 5 characters")])
+    founded = DecimalField('Founded', [validators.NumberRange(min=1800, max=2023, message="Invalid year")])
+    country = StringField('Country', [validators.Length(min=1, max=20, message="Invalid country name")])
+    national = StringField('National', [validators.AnyOf(['0', '1'], message="National must be 0 or 1")])
     logo_url = StringField('Logo URL')
-   # venue_id = DecimalField('Venue ID', [validators.NumberRange(min=0)])
     submit = SubmitField("Save")
