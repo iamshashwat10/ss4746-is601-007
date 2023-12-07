@@ -142,13 +142,34 @@ def edit():
 def list():
     rows = []
     try:
-        result = DB.selectAll("SELECT id, name, code, country, founded, national, logo_url, source FROM IS601_Team LIMIT 100")
+        # Set default limit
+        limit = min(int(request.args.get("limit", 100)), 100)
+
+        # Get sorting parameters from query string
+        sort_field = request.args.get("sort_field", "id")
+        sort_order = request.args.get("sort_order", "asc").upper()
+
+        # Validate sort order
+        if sort_order not in ["ASC", "DESC"]:
+            sort_order = "ASC"
+
+        result = DB.selectAll(
+            f"SELECT id, name, code, country, founded, national, logo_url, source FROM IS601_Team "
+            f"ORDER BY {sort_field} {sort_order} LIMIT %s",
+            limit
+        )
         if result.status and result.rows:
             rows = result.rows
+        else:
+            flash("No team records available.", "info")
     except Exception as e:
         print(e)
         flash("Error getting team records", "danger")
+    
     return render_template("team_list.html", rows=rows)
+
+
+
 
 @football.route("/delete", methods=["GET"])
 @admin_permission.require(http_exception=403)
