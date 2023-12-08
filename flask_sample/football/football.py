@@ -109,23 +109,12 @@ def add():
 @football.route("/edit", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def edit():
-    form = TeamForm()
     id = request.args.get("id")
+
     if id is None:
         flash("Missing ID", "danger")
         return redirect(url_for("football.list"))
-    if form.validate_on_submit() and id:
-        try:
-            # Update the existing team record in the database
-            result = DB.insertOne(
-                "UPDATE IS601_Team SET name = %s, code = %s, country = %s, founded = %s, national = %s, logo_url = %s WHERE id = %s",
-                form.name.data, form.code.data, form.country.data, form.founded.data,
-                form.national.data, form.logo_url.data, id
-            )
-            if result.status:
-                flash(f"Updated team record for {form.name.data}", "success")
-        except Exception as e:
-            flash(f"Error updating team record: {e}", "danger")
+
     try:
         result = DB.selectOne(
             "SELECT name, code, country, founded, national, logo_url FROM IS601_Team WHERE id = %s",
@@ -135,7 +124,47 @@ def edit():
             form = TeamForm(data=result.row)
     except Exception as e:
         flash("Error fetching team record", "danger")
+        return redirect(url_for("football.list"))
+
+    if request.method == "POST":
+        try:
+            # Additional form data validation
+            if not 3 <= len(request.form["code"]) <= 5:
+                flash("Code must be between 3 and 5 characters.", "danger")
+                return render_template("team_form.html", form=form, type="Edit")
+
+            try:
+                founded_year = int(request.form["founded"])
+                if not 0 <= founded_year <= datetime.datetime.now().year:
+                    raise ValueError("Invalid year")
+            except ValueError:
+                flash("Founded must be a valid year.", "danger")
+                return render_template("team_form.html", form=form, type="Edit")
+
+            if request.form["national"] not in ['0', '1']:
+                flash("National must be 0 or 1.", "danger")
+                return render_template("team_form.html", form=form, type="Edit")
+
+            # Update the existing team record in the database
+            result = DB.insertOne(
+                "UPDATE IS601_Team SET name = %s, code = %s, country = %s, founded = %s, national = %s, logo_url = %s WHERE id = %s",
+                request.form["name"], request.form["code"], request.form["country"], founded_year,
+                request.form["national"], request.form["logo_url"], id
+            )
+
+            if result.status:
+                flash(f"Updated team record for {request.form['name']}", "success")
+                return redirect(url_for("football.list"))
+            else:
+                flash(f"Error updating team record: {result.error}", "danger")
+
+        except Exception as e:
+            flash(f"Error updating team record: {e}", "danger")
+
     return render_template("team_form.html", form=form, type="Edit")
+
+
+
 
 @football.route("/list", methods=["GET"])
 @admin_permission.require(http_exception=403)
