@@ -28,12 +28,20 @@
                     <a class="nav-link"
                         href="{{url_for('auth.profile')}}">Profile</a>
                 </li>
-                <!-- samples nav -->
-                {% set samples = [
-                ("sample.add", "Add"),
-                ("sample.list", "List"),
-                ] %}
-                {{dropdown_nav("Samples", samples)}}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('football.list')}}">Teams
+                        List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                        href="{{url_for('football.watchlist')}}">Teams
+                        WatchList</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                        href="{{url_for('football.unwatched')}}">Teams
+                        Unwatched</a>
+                </li>
                 <!-- roles nav (requires admin )-->
                 {% if current_user.has_role("Admin") %}
                 {% set roles = [
@@ -44,14 +52,14 @@
 
                 {{dropdown_nav("Roles", roles)}}
                 <!-- football nav (requires admin )-->
-
                 {% set football = [
-                ("football.fetch", "Fetch"),
-                ("football.add", "Add"),
-                ("football.list", "List")
-                ] %}
-                {{dropdown_nav("Football", football)}}
+                    ("football.fetch", "Fetch"),
+                    ("football.add", "Add"),
+                    ("football.associations", "Associations"),
+                    ("football.manage", "Manage Associations")
+                    ] %}
                 {% endif %}
+                 {{dropdown_nav("Football", football)}}
                 <li class="nav-item">
                     <a class="nav-link"
                         href="{{url_for('auth.logout')}}">Logout</a>
