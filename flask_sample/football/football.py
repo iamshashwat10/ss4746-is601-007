@@ -19,6 +19,7 @@ def get_total(partial_query, args={}):
         total = 0
     return total
 
+#ss4746 #12/9/2023
 @football.route("/fetch", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def fetch():
@@ -58,7 +59,7 @@ def fetch():
 
     return render_template("team_search.html", form=form)
 
-
+#ss4746 #12/9/2023
 @football.route("/add", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def add():
@@ -114,7 +115,7 @@ def add():
 
     return render_template("team_form.html", form=form, type="Create")
 
-
+#ss4746 #12/9/2023
 @football.route("/edit", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def edit():
@@ -172,7 +173,7 @@ def edit():
 
     return render_template("team_form.html", form=form, type="Edit")
 
-
+#ss4746 #12/9/2023
 @football.route("/list", methods=["GET"])
 def list():
     form = TeamSearchForm(request.args)
@@ -216,7 +217,7 @@ def list():
     return render_template("team_list.html", rows=rows, form=form, total_records=total_records)
 
 
-
+#ss4746 #12/9/2023
 @football.route("/delete", methods=["GET"])
 @admin_permission.require(http_exception=403)
 def delete():
@@ -235,7 +236,7 @@ def delete():
         flash("No ID present", "warning")
     return redirect(url_for("football.list", **args))
 
-
+#ss4746 #12/9/2023
 @football.route("/view", methods=["GET"])
 def view():
     id = request.args.get("id")
@@ -291,6 +292,7 @@ def track():
             return redirect(url_for("football.view", **args))
     return redirect(url_for("football.list", **args))
 
+#ss4746 #12/9/2023
 @football.route("/watchlist", methods=["GET"])
 def watchlist():
     
@@ -337,6 +339,7 @@ def watchlist():
      WHERE w.user_id = %(user_id)s""", {"user_id": id})
     return render_template("team_list.html", rows=rows, form=form, title="Watchlist", total_records=total_records)
 
+#ss4746 #12/9/2023
 @football.route("/clear", methods=["GET"])
 def clear():
     id = request.args.get("id")
@@ -358,7 +361,7 @@ def clear():
 
     return redirect(url_for("football.watchlist", **args))
 
-
+#ss4746 #12/9/2023
 @football.route("/associations", methods=["GET"])
 @admin_permission.require(http_exception=403)
 def associations():
@@ -404,6 +407,7 @@ def associations():
      WHERE w.user_id = %(user_id)s""", {"user_id": id})
     return render_template("team_list.html", rows=rows, form=form, title="Associations", total_records=total_records)
 
+#ss4746 #12/9/2023
 @football.route("/unwatched", methods=["GET"])
 @login_required
 def unwatched():
@@ -450,6 +454,7 @@ def unwatched():
      WHERE c.id not in (SELECT DISTINCT team_id FROM IS601_WatchList)""")
     return render_template("team_list.html", rows=rows, form=form, title="Unwatched Items", total_records=total_records)
 
+#ss4746 #12/9/2023
 @football.route("/manage", methods=["GET"])
 def manage():
     form = AssocForm(request.args)
@@ -468,6 +473,7 @@ def manage():
     print(f"Teams {teams}")
     return render_template("team_association.html", users=users, teams=teams, form=form)
 
+#ss4746 #12/9/2023
 @football.route("/manage_assoc", methods=["POST"])
 def manage_assoc():
     users = request.form.getlist("users[]")
