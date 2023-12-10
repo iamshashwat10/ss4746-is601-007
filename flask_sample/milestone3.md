@@ -1,6 +1,6 @@
 <table><tr><td> <em>Assignment: </em> IS601 Milestone 3 API Project</td></tr>
 <tr><td> <em>Student: </em> Shashwat Singh (ss4746)</td></tr>
-<tr><td> <em>Generated: </em> 12/10/2023 11:06:35 AM</td></tr>
+<tr><td> <em>Generated: </em> 12/10/2023 1:34:02 PM</td></tr>
 <tr><td> <em>Grading Link: </em> <a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IS601-007-F23/is601-milestone-3-api-project/grade/ss4746" target="_blank">Grading</a></td></tr></table>
 <table><tr><td> <em>Instructions: </em> <ol><li>Checkout Milestone3 branch</li><li>Create a new markdown file called milestone3.md</li><li>git add/commit/push immediate</li><li>Fill in the below deliverables</li><li>At the end copy the markdown and paste it into milestone3.md</li><li>Add/commit/push the changes to Milestone3</li><li>PR Milestone3 to dev and verify</li><li>PR dev to prod and verify</li><li>Checkout dev locally and pull changes to get ready for Milestone 4</li><li>Submit the direct link to this new milestone3.md file from your GitHub prod branch to Canvas</li></ol><p>Note: Ensure all images appear properly on GitHub and everywhere else. Images are only accepted from dev or prod, not localhost. All website links must be from prod (you can assume/infer this by getting your dev URL and changing dev to prod).</p></td></tr></table>
 <table><tr><td> <em>Deliverable 1: </em> API Data Association </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
@@ -24,25 +24,25 @@
 </td></tr>
 </table></td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 2: </em> List Associated Entities to the logged in user </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
+<table><tr><td> <em>Deliverable 2: </em> List Associated Entities to the logged in user </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Show the page where a user can list related/associated entities</td></tr>
 <tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-12-10T07.08.34image.png.webp?alt=media&token=8d8cda79-77d4-4cb5-8aa1-cded38095f33"/></td></tr>
 <tr><td> <em>Caption:</em> <p>Watchlist page Listing Associated Entities to the logged in user<br></p>
 </td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Add pull request(s) url</td></tr>
-<tr><td>Not provided</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/40">https://github.com/iamshashwat10/ss4746-is601-007/pull/40</a> </td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 3: </em> List entities associated with users </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
+<table><tr><td> <em>Deliverable 3: </em> List entities associated with users </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Show a page that lists entities that are associated with at least 1 user</td></tr>
 <tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-12-10T07.10.34image.png.webp?alt=media&token=54aab384-a34b-4066-8290-a67c2bd140bb"/></td></tr>
 <tr><td> <em>Caption:</em> <p>Admin having access to List entities associated with users<br></p>
 </td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Add pull request(s) url</td></tr>
-<tr><td>Not provided</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/40">https://github.com/iamshashwat10/ss4746-is601-007/pull/40</a> </td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 4: </em> Admin Association Page </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
+<table><tr><td> <em>Deliverable 4: </em> Admin Association Page </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Admin page to search for users and entities</td></tr>
 <tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-12-10T15.33.48image.png.webp?alt=media&token=b2a38305-1efa-475f-89e0-ad0e2ccd5a64"/></td></tr>
 <tr><td> <em>Caption:</em> <p>Manage Association Page (Admin Can Add/remove Association for a User)<br></p>
@@ -52,9 +52,9 @@
 </td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Add pull request(s) url</td></tr>
-<tr><td>Not provided</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/40">https://github.com/iamshashwat10/ss4746-is601-007/pull/40</a> </td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 5: </em> Project Related Screens not yet shown </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
+<table><tr><td> <em>Deliverable 5: </em> Project Related Screens not yet shown </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshots of other pages not yet shown</td></tr>
 <tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fss4746%2F2023-12-10T07.14.24image.png.webp?alt=media&token=2adb29d4-241a-44f0-b842-6cf5439a45c3"/></td></tr>
 <tr><td> <em>Caption:</em> <p>The &quot;Fetch Screen&quot; serves the purpose of allowing users to retrieve detailed information<br>about a football team from an external API. Users can input the team&#39;s<br>name in the provided form, and upon submission, the application fetches and displays<br>relevant data from the API, providing users with the latest details about the<br>specified football team.<br></p>
@@ -72,10 +72,10 @@
 <tr><td> <em>Sub-Task 2: </em> Explain each screen shown above</td></tr>
 <tr><td> <em>Response:</em> <div>Fetch Screen:</div><div>Purpose: Allows the user to fetch football team data from an external<br>API by entering the team's name.</div><div>High-Level Logic:</div><div>Utilizes a form to input the team<br>name.</div><div>Calls the API using the entered name.</div><div>Validates and processes the API response.</div><div>Inserts or<br>updates the team record in the database.</div><div><br></div><div>Add Screen:</div><div>Purpose: Enables the user to manually<br>add a football team to the database.</div><div>High-Level Logic:</div><div>Validates the form input for team<br>details.</div><div>Checks for the existence of the team in the database.</div><div>Inserts a new team<br>record if the team does not exist.</div><div>Displays success or error messages.</div><div><br></div><div>Team List Screen:</div><div>Purpose:<br>Displays a list of football teams with various filtering options.</div><div>High-Level Logic:</div><div>Retrieves team data<br>from the database based on applied filters.</div><div>Allows sorting, limiting, and filtering by name,<br>country, and founded year.</div><div>Displays the list with relevant information.</div><div>Handles errors and provides flash<br>messages.</div><div><br></div><div>View/Edit Screen:</div><div>Purpose: Shows detailed information about a specific football team and allows editing.</div><div>High-Level<br>Logic:</div><div>Fetches team details from the database based on the team ID.</div><div>Renders the information<br>in a readable format.</div><div>Enables editing and validates changes.</div><div>Updates the database with edited information.</div><div><br></div><div>Unwatched<br>Screen:</div><div>Purpose: Lists football teams that the current user has not watched.</div><div>High-Level Logic:</div><div>Retrieves teams<br>not present in the user's watchlist from the database.</div><div>Applies filters for name, country,<br>sorting, and limiting.</div><div>Displays the list with an option to watch the teams.</div><div><br></div><div>Watchlist Screen:</div><div>Purpose:<br>Displays the user's watchlist of football teams.</div><div>High-Level Logic:</div><div>Retrieves teams associated with the user<br>from the watchlist.</div><div>Allows sorting, limiting, and filtering by name, country, and founded year.</div><div>Provides<br>options to unwatch teams.</div><br></td></tr>
 <tr><td> <em>Sub-Task 3: </em> Add pull request(s) url</td></tr>
-<tr><td>Not provided</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/iamshashwat10/ss4746-is601-007/pull/40">https://github.com/iamshashwat10/ss4746-is601-007/pull/40</a> </td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 6: </em> Misc </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 6: </em> Misc </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Describe any issues and learnings throughout this milestone</td></tr>
-<tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
+<tr><td> <em>Response:</em> <p>While fetching the data from the API, the API was giving difficulty to<br>integrate with python, used rapidAPI checkpoints python&nbsp; code-snippet<br>one notable issue was the challenge<br>of efficiently handling API data associations with user actions. Implementing logic for the<br>watchlist and ensuring accurate associations between users and football teams required careful consideration.<br>A key learning from this process was the significance of proper database schema<br>design and utilizing SQL relationships.<div>Also, i got problem in sending data between html<br>file and python through render template function<br><div>I got help from professor&#39;s Quick Check<br>Video and was able to implement everything successfully.&nbsp;</div></div><br></p><br></td></tr>
 </table></td></tr>
 <table><tr><td><em>Grading Link: </em><a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IS601-007-F23/is601-milestone-3-api-project/grade/ss4746" target="_blank">Grading</a></td></tr></table>
