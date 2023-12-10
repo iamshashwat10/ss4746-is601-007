@@ -2,15 +2,27 @@ import datetime
 from flask import Blueprint, flash, get_flashed_messages, render_template, request, redirect, url_for
 from sql.db import DB  # Import your DB class
 from utils.api import API  # Import your API class for football API
-from football.forms import TeamForm, TeamSearchForm  # Import your TeamForm class
+from football.forms import TeamForm, TeamSearchForm, TeamFetchForm, AdminTeamSearchForm, AssocForm
 from roles.permissions import admin_permission
+from flask_login import current_user, login_required
 
 football = Blueprint('football', __name__, url_prefix='/football', template_folder='templates')
+
+def get_total(partial_query, args={}):
+    total = 0
+    try:
+        result = DB.selectOne("SELECT count(1) as total FROM "+partial_query, args)
+        if result.status and result.row:
+            total = int(result.row["total"])
+    except Exception as e:
+        print(f"Error getting total {e}")
+        total = 0
+    return total
 
 @football.route("/fetch", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def fetch():
-    form = TeamSearchForm()  # Assuming you have a TeamSearchForm for football teams
+    form = TeamFetchForm()  # Assuming you have a TeamSearchForm for football teams
     if form.validate_on_submit():
         try:
             # Use your football API class (e.g., FootballAPI) to get team information
@@ -46,8 +58,7 @@ def fetch():
 
     return render_template("team_search.html", form=form)
 
-#ss4746
-#Date: 12/05/2023
+
 @football.route("/add", methods=["GET", "POST"])
 @admin_permission.require(http_exception=403)
 def add():
@@ -102,8 +113,6 @@ def add():
                 flash(f"{field.title()} {error}", "danger")
 
     return render_template("team_form.html", form=form, type="Create")
-
-
 
 
 @football.route("/edit", methods=["GET", "POST"])
@@ -164,39 +173,47 @@ def edit():
     return render_template("team_form.html", form=form, type="Edit")
 
 
-
-
 @football.route("/list", methods=["GET"])
-@admin_permission.require(http_exception=403)
 def list():
+    form = TeamSearchForm(request.args)
+    allowed_columns = ["name", "country", "founded_year"]
+    form.sort.choices = [(k, k) for k in allowed_columns]
+    query = """
+    SELECT id, name, code, country, founded, national, logo_url, source, 
+    IFNULL((SELECT count(1) FROM IS601_WatchList WHERE user_id = %(user_id)s and team_id = IS601_Team.id), 0) as 'is_assoc' 
+    FROM IS601_Team WHERE 1=1
+    """
+    args = {"user_id": current_user.id}
+    where = ""
+
+    if form.name.data:
+        args["name"] = f"%{form.name.data}%"
+        where += " AND name LIKE %(name)s"
+    if form.country.data:
+        args["country"] = f"%{form.country.data}%"
+        where += " AND country LIKE %(country)s"
+
+    if form.sort.data in allowed_columns and form.order.data in ["asc", "desc"]:
+        where += f" ORDER BY {form.sort.data} {form.order.data}"
+
+    limit = 10
+    if form.limit.data:
+        limit = form.limit.data
+        if limit < 1:
+            limit = 1
+        if limit > 100:
+            limit = 100
+        args["limit"] = limit
+        where += " LIMIT %(limit)s"
+
+    result = DB.selectAll(query + where, args)
     rows = []
-    try:
-        # Set default limit
-        limit = min(int(request.args.get("limit", 100)), 100)
 
-        # Get sorting parameters from query string
-        sort_field = request.args.get("sort_field", "id")
-        sort_order = request.args.get("sort_order", "asc").upper()
+    if result.status and result.rows:
+        rows = result.rows
 
-        # Validate sort order
-        if sort_order not in ["ASC", "DESC"]:
-            sort_order = "ASC"
-
-        result = DB.selectAll(
-            f"SELECT id, name, code, country, founded, national, logo_url, source FROM IS601_Team "
-            f"ORDER BY {sort_field} {sort_order} LIMIT %s",
-            limit
-        )
-        if result.status and result.rows:
-            rows = result.rows
-        else:
-            flash("No team records available.", "info")
-    except Exception as e:
-        print(e)
-        flash("Error getting team records", "danger")
-    
-    return render_template("team_list.html", rows=rows)
-
+    total_records = get_total(""" IS601_Team""")
+    return render_template("team_list.html", rows=rows, form=form, total_records=total_records)
 
 
 
@@ -218,22 +235,267 @@ def delete():
         flash("No ID present", "warning")
     return redirect(url_for("football.list", **args))
 
+
 @football.route("/view", methods=["GET"])
 def view():
     id = request.args.get("id")
-    if id is None:
-        flash("Missing ID", "danger")
-        return redirect(url_for("football.list"))
-    try:
-        result = DB.selectOne(
-            "SELECT name, code, country, founded, national, logo_url FROM IS601_Team WHERE id = %s",
-            id
-        )
-        if result.status and result.row:
-            return render_template("team_view.html", team=result.row)
-        else:
-            flash("Team record not found", "danger")
-    except Exception as e:
-        print(f"Team error {e}")
-        flash("Error fetching team record", "danger")
+    if not id:
+        flash("Missing id", "danger")
+    else:
+        try:
+            result = DB.selectOne("""SELECT name, code, country, founded, national, logo_url, source, 
+    IFNULL((SELECT count(1) FROM IS601_WatchList WHERE user_id = %(user_id)s and team_id = IS601_Team.id), 0) as 'is_assoc' 
+    FROM IS601_Team WHERE id = %(team_id)s""", {"team_id": id, "user_id": current_user.id})
+            if result.status and result.row:
+                return render_template("team_view.html", data=result.row)
+        except Exception as e:
+            print(f"Error fetching record {e}")
+            flash("Error finding item","danger")
     return redirect(url_for("football.list"))
+
+#ss4746 #12-09-2023
+@football.route("/track", methods=["GET"])
+@login_required
+def track():
+    id = request.args.get("id")
+    args = {**request.args}
+    del args["id"]
+    if not id:
+        flash("Missing id parameter", "danger")
+    else:
+        params = {"user_id": current_user.id, "team_id": id}
+        try : 
+            try:
+                result = DB.insertOne("INSERT INTO IS601_WatchList (team_id, user_id) VALUES (%(team_id)s, %(user_id)s)", params)
+                if result.status:
+                    flash("Added team to your watch list", "success")
+            except Exception as e:
+                print(f"Should just be a duplicate exception and can be ignored {e}")
+                result = DB.delete("DELETE FROM IS601_WatchList WHERE team_id = %(team_id)s AND user_id = %(user_id)s", params)
+                if result.status:
+                    flash("Removed team from your watch list", "success")
+        except Exception as e:
+            print(f"Error doing something with track/untrack {e}")
+            flash("An unhandled error occurred please try again" ,"danger")
+
+    url = request.referrer
+    if url:
+        from urllib.parse import urlparse
+        url_stuff = urlparse(url)
+        watchlist_url = url_for("football.watchlist")
+        print(f"Parsed url {url_stuff} {watchlist_url}")
+        if url_stuff.path == url_for("football.watchlist"):
+            return redirect(url_for("football.watchlist", **args))
+        elif url_stuff.path == url_for("football.view"):
+            args["id"] = id
+            return redirect(url_for("football.view", **args))
+    return redirect(url_for("football.list", **args))
+
+@football.route("/watchlist", methods=["GET"])
+def watchlist():
+    
+    id = request.args.get("id", current_user.id)
+    form = TeamSearchForm(request.args)
+    allowed_columns = ["name", "country", "founded_year"]
+    form.sort.choices = [(k, k) for k in allowed_columns]
+    query = """
+    SELECT t.id, name, code, country, founded, national, logo_url, source, 
+    IFNULL((SELECT count(1) FROM IS601_WatchList WHERE user_id = %(user_id)s and team_id = t.id), 0) as 'is_assoc' 
+    FROM IS601_Team t JOIN IS601_WatchList w ON t.id = w.team_id
+    WHERE w.user_id = %(user_id)s
+    """
+    args = {"user_id":id}
+    where = ""
+
+    if form.name.data:
+        args["name"] = f"%{form.name.data}%"
+        where += " AND name LIKE %(name)s"
+    if form.country.data:
+        args["country"] = f"%{form.country.data}%"
+        where += " AND country LIKE %(country)s"
+
+    if form.sort.data in allowed_columns and form.order.data in ["asc", "desc"]:
+        where += f" ORDER BY {form.sort.data} {form.order.data}"
+
+    limit = 10
+    if form.limit.data:
+        limit = form.limit.data
+        if limit < 1:
+            limit = 1
+        if limit > 100:
+            limit = 100
+        args["limit"] = limit
+        where += " LIMIT %(limit)s"
+
+    result = DB.selectAll(query + where, args)
+    rows = []
+
+    if result.status and result.rows:
+        rows = result.rows
+
+    total_records = get_total(""" IS601_Team t JOIN IS601_WatchList w ON t.id = w.team_id
+     WHERE w.user_id = %(user_id)s""", {"user_id": id})
+    return render_template("team_list.html", rows=rows, form=form, title="Watchlist", total_records=total_records)
+
+@football.route("/clear", methods=["GET"])
+def clear():
+    id = request.args.get("id")
+    args = {**request.args}
+    if "id" in args:
+        del args["id"]
+    if not id:
+        flash("Missing id", "danger")
+    else:
+        if id == current_user.id or current_user.has_role("Admin"):
+            try:
+                result = DB.delete("DELETE FROM IS601_WatchList WHERE user_id = %(user_id)s", {"user_id":id})
+                if result.status:
+                    flash("Cleared watchlist", "success")
+            except Exception as e:
+                print(f"Error clearing watchlist {e}")
+                flash("Error clearing watchlist","danger")
+        
+
+    return redirect(url_for("football.watchlist", **args))
+
+
+@football.route("/associations", methods=["GET"])
+@admin_permission.require(http_exception=403)
+def associations():
+    
+    form = AdminTeamSearchForm(request.args)
+    allowed_columns = ["name", "country", "founded_year"]
+    form.sort.choices = [(k, k) for k in allowed_columns]
+    query = """
+    SELECT u.id as user_id, username, c.id, name, code, country, founded, national, logo_url, source
+    FROM IS601_Team c JOIN IS601_WatchList w ON c.id = w.team_id LEFT JOIN IS601_Users u on u.id = w.user_id
+    WHERE 1=1
+    """
+    args = {}
+    where = ""
+
+    if form.name.data:
+        args["name"] = f"%{form.name.data}%"
+        where += " AND name LIKE %(name)s"
+    if form.country.data:
+        args["country"] = f"%{form.country.data}%"
+        where += " AND country LIKE %(country)s"
+
+    if form.sort.data in allowed_columns and form.order.data in ["asc", "desc"]:
+        where += f" ORDER BY {form.sort.data} {form.order.data}"
+
+    limit = 10
+    if form.limit.data:
+        limit = form.limit.data
+        if limit < 1:
+            limit = 1
+        if limit > 100:
+            limit = 100
+        args["limit"] = limit
+        where += " LIMIT %(limit)s"
+
+    result = DB.selectAll(query + where, args)
+    rows = []
+
+    if result.status and result.rows:
+        rows = result.rows
+
+    total_records = get_total(""" IS601_Team t JOIN IS601_WatchList w ON t.id = w.team_id
+     WHERE w.user_id = %(user_id)s""", {"user_id": id})
+    return render_template("team_list.html", rows=rows, form=form, title="Associations", total_records=total_records)
+
+@football.route("/unwatched", methods=["GET"])
+@login_required
+def unwatched():
+    form = TeamSearchForm(request.args)
+    allowed_columns = ["name", "country", "founded_year"]
+    form.sort.choices = [(k, k) for k in allowed_columns]
+    query = """
+    SELECT c.id, name, code, country, founded, national, logo_url,
+    IFNULL((SElECT count(1) FROM IS601_WatchList WHERE user_id = %(user_id)s and team_id = c.id), 0) as 'is_assoc' 
+    FROM IS601_Team c 
+    
+     WHERE c.id not in (SELECT DISTINCT team_id FROM IS601_WatchList)
+    """
+    args = {"user_id": current_user.id}
+    where = ""
+
+    if form.name.data:
+        args["name"] = f"%{form.name.data}%"
+        where += " AND name LIKE %(name)s"
+    if form.country.data:
+        args["country"] = f"%{form.country.data}%"
+        where += " AND country LIKE %(country)s"
+
+    if form.sort.data in allowed_columns and form.order.data in ["asc", "desc"]:
+        where += f" ORDER BY {form.sort.data} {form.order.data}"
+    
+    
+    limit = 10
+    if form.limit.data:
+        limit = form.limit.data
+        if limit < 1:
+            limit = 1
+        if limit > 100:
+            limit = 100
+        args["limit"] = limit
+        where += " LIMIT %(limit)s"
+
+    result = DB.selectAll(query+where, args)
+    rows = []
+    if result.status and result.rows:
+        rows = result.rows
+
+    total_records = get_total(""" IS601_Team c 
+     WHERE c.id not in (SELECT DISTINCT team_id FROM IS601_WatchList)""")
+    return render_template("team_list.html", rows=rows, form=form, title="Unwatched Items", total_records=total_records)
+
+@football.route("/manage", methods=["GET"])
+def manage():
+    form = AssocForm(request.args)
+    users = []
+    teams = []
+    username = form.username.data
+    team_name = form.team.data
+    if username and team_name:
+        result = DB.selectAll("SELECT id, username FROM IS601_Users WHERE username like %(username)s LIMIT 25",{"username":f"%{username}%"})
+        if result.status and result.rows:
+            users = result.rows
+        result = DB.selectAll("SELECT id, name FROM IS601_Team WHERE name like %(team)s LIMIT 25", {"team":f"%{team_name}%"})
+        if result.status and result.rows:
+            teams = result.rows
+    print(f"Users {users}")
+    print(f"Teams {teams}")
+    return render_template("team_association.html", users=users, teams=teams, form=form)
+
+@football.route("/manage_assoc", methods=["POST"])
+def manage_assoc():
+    users = request.form.getlist("users[]")
+    teams = request.form.getlist("teams[]")
+    print(users, teams)
+    args = {**request.args}
+    if users and teams: # we need both for this to work
+        mappings = []
+        for user in users:
+            for team in teams:
+                mappings.append({"user_id":user, "team_id":team})
+        if len(mappings) > 0:
+            for mapping in mappings:
+                print(f"mapping {mapping}")
+                try:
+                    result = DB.insertOne("INSERT INTO IS601_WatchList (user_id, team_id) VALUES(%(user_id)s, %(team_id)s)", mapping)
+                    if result.status:
+                        pass
+                        #flash(f"Successfully enabled/disabled roles for the user/role {len(mappings)} mappings", "success")
+                except Exception as e:
+                    print(f"Insert error {e}")
+                    result = DB.delete("DELETE FROM IS601_WatchList WHERE user_id = %(user_id)s and team_id = %(team_id)s",mapping)
+            flash("Successfully applied mappings", "success")
+        else:
+            flash("No user/team mappings", "danger")
+
+    if "users" in args:
+        del args["users"]
+    if "teams" in args:
+        del args["teams"]
+    return redirect(url_for("football.manage", **args))

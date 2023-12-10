@@ -1,54 +1,41 @@
 {% extends "layout.html" %}
-{% block title %}Football{% endblock %}
+{% block title %} Football {% endblock %}
 
-<!-- content -->
+<!-- Content -->
 {% block content %}
-{% from "_table_helper.html" import render_table %}
-{% set view = "football.view" %}
-{% set edit = "football.edit" %}
-{% set delete = "football.delete" %}
+    {% from "_table_helper.html" import render_table %}
+    {% from "_formhelpers.html" import render_field %}
+    {% set view = "football.view" %}
+    {% if current_user.is_authenticated %}
+    {% set assoc = "football.track" %}
+    {% else %}
+    {% set assoc = None %}
+    {% endif %}
+    {% if current_user.has_role("Admin") %}
+    {% set edit = "football.edit" %}
+    {% set delete = "football.delete" %}
+    {% else %}
+    {% set edit = None %}
+    {% set delete = None %}
+    {% endif %}
+    <div class="container-fluid">
+        {% include '_team_search.html' %}
+        {% if current_user.is_authenticated or current_user.has_role("Admin") %}
 
-<div class="container-fluid">
-    <!-- Add the sorting, limiting, and founded year filter form -->
-    <form method="get" action="{{ url_for('football.list') }}" class="form-inline mb-3">
-        <div class="form-group mr-2">
-            <label for="limit">Limit:</label>
-            <input type="number" name="limit" id="limit" value="{{ request.args.get('limit', 100) }}" min="1" max="100" class="form-control">
-        </div>
-        <div class="form-group mr-2">
-            <label for="sort_field">Sort by:</label>
-            <select name="sort_field" id="sort_field" class="form-control">
-                <option value="id">ID</option>
-                <option value="name">Name</option>
-                <!-- Add more options as needed for your fields -->
-            </select>
-        </div>
-        <div class="form-group mr-2">
-            <label for="sort_order">Sort order:</label>
-            <select name="sort_order" id="sort_order" class="form-control">
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-            </select>
-        </div>
-        <div class="form-group mr-2">
-            <label for="founded_year">Founded Year:</label>
-            <input type="number" name="founded_year" id="founded_year" value="{{ request.args.get('founded_year') }}" min="0" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Apply</button>
+    <form
+        action="{{url_for('football.clear', id=request.args.get('id', current_user.id))}}"
+        onsubmit="return confirm('Are you sure?')">
+        <input type="hidden" name="id"
+            value="{{request.args.get('id', current_user.id)}}" />
+        <input type="submit" class="btn btn-danger" value="Clear Watchlist" />
     </form>
-
-    <!-- Display flash messages -->
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="flash-messages">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Render the table -->
-    {{ render_table(rows, "Teams", [], view, edit, delete) }}
-</div>
+    <div class="row">
+        <div class="col">
+            Showing Results {{rows | length}}/{{total_records or 0}}
+        </div>
+    </div>
+    {% endif %}
+         <!-- Render the table -->
+         {{ render_table(rows, title if title else "Teams", ["id", "is_assoc", "user_id"], view, edit, delete, assoc) }}
+    </div>
 {% endblock %}

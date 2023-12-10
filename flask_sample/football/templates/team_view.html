@@ -1,34 +1,60 @@
 {% extends "layout.html" %}
-{% block title %}Team Details{% endblock %}
-
+{% block title %}Fetch Teams{% endblock %}
 {% block content %}
-  <div class="container">
-    <h1>Team Details</h1>
-    <dl class="row">
-      <dt class="col-sm-3">Name:</dt>
-      <dd class="col-sm-9">{{ team.name }}</dd>
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid text-center">
+    <div class="h3">Card</div>
 
-      <dt class="col-sm-3">Code:</dt>
-      <dd class="col-sm-9">{{ team.code }}</dd>
+    <div class="card mx-auto" style="width: 18rem;">
+        <div class="card-header">
+            <div class="row">
+                {% if current_user.is_authenticated %}
+                <div class="col-auto">
+                    <a href="{{url_for('football.track', id=request.args.get('id'))}}"
+                        class="btn btn-secondary">
+                        {% if data.is_assoc %}
+                        <i class="bi bi-balloon-heart-fill"></i></a>
+                    {% else %}
+                    <i class="bi bi-balloon-heart"></i></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.has_role("Admin") %}
+                <div class="col-auto">
+                    <a href="{{url_for('football.edit', id=request.args.get('id'))}}"
+                        class="btn btn-secondary"><i
+                            class="bi bi-pencil"></i></a>
+                </div>
+                <div class="col-auto">
+                    <a href="{{url_for('football.delete', id=request.args.get('id'))}}"
+                        class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
 
-      <dt class="col-sm-3">Country:</dt>
-      <dd class="col-sm-9">{{ team.country }}</dd>
 
-      <dt class="col-sm-3">Founded:</dt>
-      <dd class="col-sm-9">{{ team.founded }}</dd>
 
-      <dt class="col-sm-3">National:</dt>
-      <dd class="col-sm-9">{{ "Yes" if team.national else "No" }}</dd>
+<div class="card-body">
+    <div class="card-title">{{ data.name }} (Code: {{ data.code }})</div>
+    <div class="card-text">Country: {{ data.country }}</div>
+    <div class="card-text">Founded: {{ data.founded }}</div>
+    <div class="card-text">National: {{ "Yes" if data.national else "No" }}</div>
 
-      <dt class="col-sm-3">Logo URL:</dt>
-      <dd class="col-sm-9">
-        {% if team.logo_url %}
-          <img src="{{ team.logo_url }}" alt="{{ team.name }} Logo" class="img-fluid">
+    <div class="card-text">
+        {% if data.logo_url %}
+            <img src="{{ data.logo_url }}" alt="{{ data.name }} Logo" class="img-fluid">
         {% else %}
-          N/A
+            Logo: N/A
         {% endif %}
-      </dd>
-    </dl>
+    </div>
+</div>
+<div class="card-footer text-muted">
     <a href="{{ url_for('football.list') }}" class="btn btn-primary">Back to Team List</a>
-  </div>
+</div>
+
+
+    </div>
+
+</div>
 {% endblock %}
