@@ -349,7 +349,7 @@ def clear():
     if not id:
         flash("Missing id", "danger")
     else:
-        if id == current_user.id or current_user.has_role("Admin"):
+        if int(id) == int(current_user.id) or current_user.has_role("Admin"):
             try:
                 result = DB.delete("DELETE FROM IS601_WatchList WHERE user_id = %(user_id)s", {"user_id":id})
                 if result.status:
